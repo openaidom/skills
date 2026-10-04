@@ -1,5 +1,5 @@
 ---
-name: Flight Deal Monitoring
+name: flight-deal-monitoring
 description: >-
   Continuously search, compare, analyze, and monitor flight prices across
   metasearch engines and airlines. Identify the lowest total travel cost while

@@ -1,5 +1,5 @@
 ---
-name: Lost or Stolen Item Finder
+name: lost-or-stolen-item-finder
 description: >-
   Locate a lost or stolen personal item that may have been listed for resale on
   second-hand marketplaces. Runs as a long-running, resumable operation that

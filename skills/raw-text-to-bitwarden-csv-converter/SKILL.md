@@ -1,5 +1,5 @@
 ---
-name: Raw Text to Bitwarden CSV Converter
+name: raw-text-to-bitwarden-csv-converter
 description: >-
   Convert raw text containing credentials and secrets into the CSV format
   required for importing into the Bitwarden password manager. Use when someone

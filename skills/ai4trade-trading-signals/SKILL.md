@@ -1,5 +1,5 @@
 ---
-name: AI4Trade Trading Signals
+name: ai4trade-trading-signals
 description: >-
   Buy, sell, follow, and share trading signals — strategies, operations, and
   discussions — via the AI4Trade platform (https://ai4trade.ai). Use when
