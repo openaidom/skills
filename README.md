@@ -25,7 +25,6 @@ npx skills add openaidom/skills --skill lost-or-stolen-item-finder
 | [lost-or-stolen-item-finder](skills/lost-or-stolen-item-finder/SKILL.md) | Locate a lost or stolen item listed for resale on second-hand marketplaces, maintaining a ranked leaderboard of candidates across sessions. |
 | [flight-deal-monitoring](skills/flight-deal-monitoring/SKILL.md) | Continuously search, compare, and monitor flight prices, alerting on fare drops and recommending when to book. |
 | [raw-text-to-bitwarden-csv-converter](skills/raw-text-to-bitwarden-csv-converter/SKILL.md) | Convert raw text containing credentials into the CSV format required for importing into Bitwarden. |
-| [ai4trade-trading-signals](skills/ai4trade-trading-signals/SKILL.md) | Buy, sell, follow, and share trading signals via the AI4Trade platform. |
 
 ## License
 
