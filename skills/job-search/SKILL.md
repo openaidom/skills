@@ -307,6 +307,7 @@ Use this structure:
     │   ├── jobs.json
     │   └── archive/
     ├── search/
+    │   ├── run-state.json
     │   ├── search-ledger.json
     │   ├── search-strategies.json
     │   └── search-statistics.json
@@ -321,6 +322,7 @@ Create missing directories and initialise missing files.
 - `preferences.md`: Ranking priorities, constraints and user feedback.
 - `jobs/jobs.json`: Authoritative cumulative job database.
 - `jobs/archive/`: Historical records retained separately if necessary.
+- `search/run-state.json`: Where execution stopped and what remains.
 - `search-ledger.json`: Executed searches, timestamps, sources, queries, pagination and outcomes.
 - `search-strategies.json`: Planned and explored search combinations.
 - `search-statistics.json`: Discovery statistics and source effectiveness.
@@ -367,70 +369,32 @@ The ledger must survive between independent agent runs.
 
 ## Search Rotation and Execution Management
 
-**This is mandatory. Do not repeat the entire search during every cycle.**
+Use bounded, independent search runs and separately scheduled reports. Honour configured intervals, reporting time and timezone; store timestamps in UTC. Persist next due times for each source/query, maintenance task and report. After downtime, resume pending work and issue one cumulative catch-up report if due, rather than replaying every missed cycle.
 
-At the beginning of every search cycle:
+Each run performs lightweight Step 0 checks, loads the profile, preferences, strategies, ledger and checkpoint, then resumes pending Steps 3-6 before selecting new work. Rebuild Steps 1-2 only if missing, invalid or affected by profile/preference changes. Workflow order applies to new work; do not restart valid completed stages.
 
-1. Read the candidate profile and preferences.
-2. Read the search ledger, strategies and statistics.
-3. Read the master job database.
-4. Identify queries and sources that are due for execution.
-5. Prioritise searches for newly published opportunities.
-6. Select a rotating subset of sources and queries.
-7. Include unexplored search combinations and promising historical strategies.
+Rotate due source/query combinations:
+- Incremental: each search interval, using overlapping publication-date windows where supported.
+- Expanded: every 12-24 hours; explore new combinations and productive strategies.
+- Coverage/strategy review: every 7 days or when feedback/results justify it.
 
-Apply these default search categories:
+Avoid repeating queries within 24 hours except due incremental searches, pagination or recorded source updates. Results may not exhaust a source. Update statistics each run; perform Step 8 strategy revisions during reviews.
 
-- **Incremental discovery:** Every 4 hours. Search for newly published listings, using an overlap window to account for indexing delays.
-- **Expanded discovery:** Every 12–24 hours. Explore new companies, job titles, technologies and search combinations.
-- **Comprehensive coverage review:** Every 7 days. Review source coverage, identify unexplored areas and investigate missed opportunities.
+Configurable defaults: 30 minutes, 100 search requests, 500 new opportunities processed. Stop at the first limit, selected-work completion or blocking error; save pending work.
 
-Do not repeat the same source/query combination within 24 hours unless there is a specific reason, such as a newly available date filter, pagination continuation or source update.
+## Continuity and Recovery
 
-Where supported, use publication-date filters and continue pagination. Do not assume that a search engine has returned every available result.
+In `search/run-state.json`, record run ID, status, timestamps, step, source/query/cursor, completed and pending tasks, and limits consumed. Save results and ledger before checkpointing each task or small batch. Never advance cursors past unsaved results.
 
-After searching:
+Use atomic writes and an exclusive lock with owner and heartbeat/expiry. Expiry alone is not proof the owner stopped: reclaim only after confirming it cannot still write, or using a mechanism that rejects stale-owner writes. Treat abandoned `running` states as interrupted. Reconcile checkpoints with the ledger/database; repeat only uncertain work and deduplicate. If a cursor expires or cannot be reused, restart that query with an overlapping date window where supported. Preserve historical discoveries.
 
-1. Deduplicate against the master database.
-2. Evaluate new and updated opportunities.
-3. Update rankings and statuses.
-4. Update search statistics and the execution ledger.
-5. Record completion timestamps and errors.
+Save results, ledger and pending tasks before recording `completed` (selected work finished), `interrupted` (limits/cancellation with work remaining) or `failed` (blocking error). Record isolated source errors and retry times; continue other sources. Check retry times before selecting failed work again.
 
-Prioritise new discoveries, unexplored search areas and sources with promising historical results.
+Reporting reads a consistent snapshot. In `reports/report-state.json`, save report ID, previous/current cutoff, file and delivery status (`pending`, `delivered`, `uncertain`). Use first-discovery and material-update timestamps within those boundaries for new discoveries and changes; rank overall opportunities from the full snapshot. Retry the saved report unchanged, with a delivery idempotency key where supported. Advance the previous-report cutoff only after confirmed delivery. Reconcile uncertain outcomes before retrying; never assume exactly-once delivery.
 
-Avoid repetition without sacrificing search coverage.
+At expiry or user stop, cease discovery, preserve pending work and deliver the final cumulative report; delivery retries must not restart searches.
 
-## Continuous Execution and Recovery
-
-Search cycles and reports are independent scheduled tasks.
-
-### Search cycle
-
-- Execute every N hours (default: 4).
-- Run the search rotation process.
-- Persist discoveries and execution history.
-- Recalculate rankings.
-- Do not generate a daily report unless one is due.
-
-### Reporting cycle
-
-- Execute daily at 08:00 Europe/Berlin.
-- Read the cumulative database.
-- Generate and save the daily report.
-- Deliver it through the configured reporting channel.
-
-### Recovery rules
-
-- Persist completed work after each successful stage.
-- If a cycle fails, record the error and preserve existing data.
-- Resume from the last successfully completed stage.
-- Avoid duplicating work when resuming.
-- Use UTC timestamps internally and Europe/Berlin for schedules and reports.
-- Use atomic writes or equivalent safeguards when updating important files.
-- Prevent overlapping executions from corrupting shared files, using file locking or an equivalent mechanism.
-
-Never claim a cycle or report succeeded unless it actually completed.
+Verify durable storage, scheduling and delivery capabilities. Disclose missing capabilities and request a manual rerun or alternative channel. Never claim continuous execution or successful delivery without confirmation.
 
 ## Privacy and Permissions
 
