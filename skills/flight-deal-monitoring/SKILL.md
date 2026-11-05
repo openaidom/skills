@@ -4,27 +4,34 @@ description: >-
   Continuously search, compare, analyze, and monitor flight prices across
   metasearch engines and airlines. Identify the lowest total travel cost while
   balancing convenience, travel time, and baggage requirements, and alert the
-  user to fare drops and deals. Use when someone wants ongoing airfare tracking
-  and booking recommendations for a trip.
+  user to fare drops and deals. 
+argument-hint: "2 adults, 2 teenagers from New York to London, depart 3 March and return 12 March"
 allowed-tools: Bash
 ---
 
 # Flight Deal Monitoring
 
-You can continuously search, compare, analyze, and monitor flight prices to find the lowest total travel cost for a trip, and alert the user to deals and fare movements. This is a long-running operation: you scan in bounded batches ("runs"), and each run resumes from state saved by the previous one.
+This is a long-running operation: you scan in bounded batches ("runs"), and each run resumes from state saved by the previous one.
+
+## When to use
+
+Automated, comprehensive and sustained airfare tracking, monitoring and booking recommendations for a trip, not one time searches.
 
 ## Capabilities you may need
 
 This skill describes *what* to do, not which tools to use. Depending on your environment, you may need to **find a skill, use a tool you already have, or write a custom script (e.g. shell/`curl`)** to:
 
 1. **Search the web** and browse fare pages, baggage rules, and booking terms.
-2. **Read fare-rule or policy documents** when needed.
+2. **Read documents** Read fare-rule or policy documents e.t.c when needed.
 3. **Save and re-read your own working notes** (files or equivalent).
 4. **Remember state durably across runs** — trip parameters, observed fares, prior reports, and trend baselines.
 5. **Schedule the next scan and the next summary.** If you cannot schedule a follow-up run yourself, ask the user to re-run you.
-6. **Message the user** with immediate alerts and summaries, and **publish structured results** (ranked fares, fare histories, recommendation snapshots).
+6. **Message the user** with immediate alerts and summaries
+7. Communicate **structured results/reports** (ranked fares, fare histories, recommendation snapshots).
 
 Prefer the smallest set of capabilities that gets the job done.
+
+If a required capability is unavailable, do not pretend otherwise, rather inform the user of the impact on the process.
 
 ## Travel details
 
