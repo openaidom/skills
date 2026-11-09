@@ -1,31 +1,42 @@
 ---
 name: job-search
-description: "Continuously discover, validate, rank and track job opportunities from the user's CV. Establish verified search and report schedules, resume saved work and deliver cumulative reports."
+description: "Continuously discover, validate, rank and track job opportunities from the user's CV/user-data. Establish verified search and report schedules, resume saved work and deliver cumulative reports."
 argument-hint: "Preferences e.g: Remote, 4k USD/month, CV Match"
 allowed-tools: Bash
 ---
 
 # Continuous Job Search
 
-Use for sustained opportunity discovery, not just a one-time search. Execute bounded runs; never assume the agent stays active between invocations. The procedure controls execution; the guides supply detailed rules.
+Use for sustained opportunity discovery, not just a one-time search. Execute bounded runs; never assume sessions/runs/turns stay active between invocations. The procedure controls execution; the guides supply detailed rules.
 
 ## Guides
 
-### Configuration and capabilities
+### Configuration
 
-Apply and save defaults unless overridden: search every 4 hours; report daily at 08:00 UTC; assignment duration 30 days; report Top 20; run limits 30 minutes, 100 search requests and 500 new opportunities processed. Expanded exploration every 24 hours; coverage review every 7 days. All are configurable. Store UTC timestamps and the configured reporting timezone identifier; respect local-time changes when scheduling.
+Apply and save defaults unless overridden: search every <search-interval> hours; report daily at <daily-report-time>.
+Make at most 1000 search requests per run. Expanded exploration every 24 hours; coverage review every 7 days. All are configurable. Store UTC timestamps and the configured <daily-report-time-zone> identifier; respect local-time changes when scheduling.
+
+### Required capabilities
 
 Find available web/browser, document-reading, durable-storage, scheduler and delivery capabilities. Use existing tools, supported skills or scripts within actual permissions. `allowed-tools` does not provide these capabilities by itself. Disclose missing capabilities; never claim successful scheduling, execution or delivery without tool confirmation. Without durable storage, stop. Without scheduling, offer manual runs; without delivery, save reports and disclose non-delivery.
 
-### Profile, ranking and search
+### Profile
 
-Extract experience, skills, seniority, responsibilities, industries, education, certifications, languages, location and work authorisation from the CV. Save and reuse the profile; refresh only when changed, invalid or requested.
+Extract experience, skills, seniority, responsibilities, industries, education, certifications, languages, location and work authorisation from the CV/user-data. Save and reuse the profile; refresh only when changed, invalid or requested.
 
-Offer ordered ranking criteria: workplace type, minimum salary/rate with currency and period, employment type, CV match, language and location. Save the user's exact order. If omitted, disclose and use that order as default; do not invent missing preferences. Use lexicographic ranking, not weighted averages: a higher-priority criterion dominates lower ones. Hybrid is not remote. Never invent compensation or assume undisclosed pay meets a minimum. Compare pay only on a documented comparable basis. Score CV match 0-100 from skills, experience, seniority, responsibilities, industry and qualifications; explain strengths and gaps, not a probability of hiring. Do not reject solely for missing some requirements.
+### Ranking
+
+Do not invent missing preferences. Use lexicographic ranking, not weighted averages: a higher-priority criterion dominates lower ones. Hybrid is not remote. Never invent compensation or assume undisclosed pay meets a minimum. Compare pay only on a documented comparable basis. Score CV match 0-100 from skills, experience, seniority, responsibilities, industry and qualifications; explain strengths and gaps, not a probability of hiring. Do not reject solely for missing some requirements.
+
+### Search
 
 Search LinkedIn, Indeed, Glassdoor, Google Jobs, Wellfound, relevant boards, marketplaces, agencies and employer pages. Prefer original employer listings and direct application links. Explore alternative/adjacent titles, technologies, seniority, industries, workplace/employment types and varied companies. Include older or previously unindexed listings, not only recent ones.
 
 Rotate due searches: incremental each search interval with overlapping date windows where supported; expanded exploration every configured exploration interval; coverage/strategy review every configured review interval or when feedback justifies it. Avoid repeating a source/query within 24 hours except due incremental searches, pagination or recorded source updates. Record coverage limitations; search results are not necessarily exhaustive. Update statistics each run; revise strategies when due.
+
+### Polite website access
+
+Minimise unnecessary load on search providers and websites. Keep direct crawling sequential or at low concurrency per domain. Respect published rate limits and Retry-After headers. Record throttling, access restrictions and deferred work in the search ledger. Continue with other sources where possible.
 
 ### Durable records and recovery
 
@@ -63,7 +74,51 @@ If completed, perform no search or report; verify remaining schedule cleanup, th
 
 ### 2. Configure - first start or changed inputs
 
-Save supplied preferences, apply disclosed defaults and ask only for necessary missing information. Set assignment ID/start/expiry once; do not extend expiry on each run. Missing CV must not postpone schedule setup. Pause only dependent work if configuration cannot be resolved. Then Step 3.
+
+Collect user preferences for: <search-interval>, <daily-report-time> and <daily-report-time-zone> by asking the below question:
+
+```
+What do you prefer?
+
+- Search interval = 2 hours 
+- Daily report time = 8am
+- Daily report time zone = GMT
+
+Respond "ok" or "y" to accept all 3; or something like "30 minutes, 10 am New York time"
+```
+
+Understand the user's (optional) goal (so you can work towards it) by asking the below question:
+
+```
+What is your goal?
+
+1. Income -  Maximise earnings.
+2. Career - Advance or restart career.
+3. Change - Change industry/profession, gain experience/skills.
+4. Ease - Flexible working arrangements.
+5. Focus - Focus on personal interests and/or values.
+6. Nothing specific
+7. Specify something else
+
+Select one to make results more satisfactory.
+```
+
+Present options for ranking results to the user, for example:
+
+```
+Please specify your ranking preferences in order of importance, or leave blank for the default order:
+
+- Workplace type = Remote | Hybrid | Onsite
+- Minimum Salary = $36k/year
+- Employment Type = Full-time | Part-time | Contract | Freelance
+- CV Match
+- Language
+- Location
+
+For example: $4k/month, CV Match, Remote (This means minimum salary of 4K is the highest priority)
+```
+
+Save supplied preferences as well as exact ranking order, apply disclosed defaults and ask only for necessary missing information. Set assignment ID/start/expiry once; do not extend expiry on each run. Missing CV/user-data must not postpone schedule setup. Pause only dependent work if configuration cannot be resolved. Then Step 3.
 
 ### 3. Create and verify schedules - mandatory before profile analysis/search
 
@@ -71,9 +126,9 @@ Inspect saved state AND the scheduler. Create or reuse separate recurring discov
 
 Every trigger must identify this assignment, invocation purpose, durable directory and how to load this skill/state in a fresh execution context. Verify enabled status, recurrence, timezone and next execution time against configuration. Save IDs and verification results. Reconcile uncertain creation before retrying; do not duplicate schedules. Correct definite errors without silently changing cadence/timezone. Inspect schedule health each invocation; repair only while active.
 
-Setup is automated only when both search and report schedules are confirmed. Otherwise record degraded setup and disclose which activity requires manual invocation. A persisted due time is not a scheduler. Missing CV leaves schedules active and discovery waiting. Execute the first search immediately once ready; creating schedules never substitutes for current work.
+Setup is automated only when both search and report schedules are confirmed. Otherwise record degraded setup and disclose which activity requires manual invocation. A persisted due time is not a scheduler. Missing CV/user-data info leaves schedules active and discovery waiting. Execute the first search immediately once ready; creating schedules never substitutes for current work.
 
-For report-only invocations, Step 6 without CV analysis or search. Otherwise Step 4.
+For report-only invocations, Step 6 without CV/user-data analysis or search. Otherwise Step 4.
 
 ### 4. Prepare and select work
 
@@ -82,6 +137,8 @@ Build/refresh the profile and strategies only when needed. If profile/search is 
 Select a bounded rotating task set: pending listings first, resumable searches, due retries, then due incremental/expanded work. Do not starve new sources with one endless pagination task. Perform due strategy/coverage maintenance within limits; save its next due time after completion. If no search work is due, Step 6. Save selected work, then Step 5.
 
 ### 5. Discover, validate, evaluate and persist - each task/batch
+
+Apply the Polite website access guide to every external request.
 
 Fetch a bounded batch or load pending listings; save raw results before advancing pagination. For EVERY listing, validate existence/open status, original/direct URLs, workplace/eligibility and compensation; deduplicate by employer/title/location/URLs. Retain uncertain listings as unverified, not confirmed open. Preserve unchanged duplicates without counting new discoveries.
 
