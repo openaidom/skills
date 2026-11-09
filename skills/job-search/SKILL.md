@@ -163,3 +163,9 @@ Save pending work, counters, checkpoint, errors and next due/retry times before 
 ## Acceptance Checks
 
 Before claiming unattended operation, verify scheduler records for both schedules and observe a scheduled invocation loading saved state. Test immediate first discovery; duplicate-free schedule recovery; pending-listing validation after interruption; report delivery retries; report-only execution; and expiry/stop producing one final report with cancelled schedules. If these have not been tested, disclose that runtime reliability remains unverified.
+
+## Execution Instruction
+
+- After reading this skill, immediately begin executing its Procedure from Step 1. Progress through the procedure in order, following its conditions and branches. Execute as much of the procedure as possible within the current invocation. Do not stop merely because setup, configuration or profile analysis is complete. Continue towards actual job discovery (Step 5) whenever prerequisites permit.
+
+- Ask the user questions **one at a time**. Never combine multiple questions into one message. Check conversation history and saved state first to avoid asking for information already available.
