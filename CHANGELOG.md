@@ -15,5 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - **flight-deal-monitoring** — continuously search, compare, and monitor flight prices; alert on fare drops and recommend when to book.
   - **raw-text-to-bitwarden-csv-converter** — convert raw text containing credentials into the CSV format required for importing into Bitwarden.
 
+### Changed
+- job-search: runs are now bounded by an explicit run budget with finish conditions instead of agent-chosen small batches, so each invocation keeps working until no due work remains or the budget is reached.
 ### Fixed
 - Frontmatter `name` now matches each skill's directory, in lowercase-hyphen form as the Agent Skills spec requires, so `npx skills add openaidom/skills@<skill>` resolves. Display headings are unchanged.

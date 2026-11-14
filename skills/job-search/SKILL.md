@@ -7,14 +7,22 @@ allowed-tools: Bash
 
 # Continuous Job Search
 
-Use for sustained opportunity discovery, not just a one-time search. Execute bounded runs; never assume sessions/runs/turns stay active between invocations. The procedure controls execution; the guides supply detailed rules.
+Use for sustained opportunity discovery, not just a one-time search. Each run is bounded by the Run budget below. Persist progress continuously: never assume sessions/runs/turns stay active between invocations. The guides supply detailed rules. The procedure controls execution.
 
 ## Guides
 
 ### Configuration
 
-Apply and save defaults unless overridden: search every <search-interval> hours; report daily at <daily-report-time>.
-Make at most 1000 search requests per run. Expanded exploration every 24 hours; coverage review every 7 days. All are configurable. Store UTC timestamps and the configured <daily-report-time-zone> identifier; respect local-time changes when scheduling.
+Apply and save defaults unless overridden: search every <search-interval> hours; report daily at <daily-report-time>; expanded exploration every 24 hours; coverage review every 7 days. All are configurable. Store UTC timestamps and the configured <daily-report-time-zone> identifier; respect local-time changes when scheduling.
+
+### Run budget
+
+A run lasts until a finish condition holds; otherwise keep working in the same invocation:
+
+- Finish when: no pending listings, due retries or due incremental/expanded/maintenance tasks remain; or the run time budget or request limit is reached; or stop/expiry is observed; or prerequisites are missing and nothing else can proceed.
+- Run time budget = half of <search-interval> (min = 1, max = 30 minutes). Read the clock from a tool (for example `date -u`); never estimate it.
+- A run ends only on a finish condition. Do not defer work you can do now to a later run: if you say you will open or check something, do it in this invocation.
+- Opening individual listings from list/aggregator pages is part of the run that found them.
 
 ### Required capabilities
 
@@ -124,7 +132,7 @@ Save supplied preferences as well as exact ranking order, apply disclosed defaul
 
 Inspect saved state AND the scheduler. Create or reuse separate recurring discovery and daily-report schedules. Persist expanded/review due tasks for discovery runs. Arrange an expiry invocation at or after expiry: prefer an exact one-time trigger; otherwise retain a recurring trigger until it observes expiry and finalises. Disclose any resulting delay or unsupported capability; never schedule the last check before expiry and assume it will close the assignment.
 
-Every trigger must identify this assignment, invocation purpose, durable directory and how to load this skill/state in a fresh execution context. Verify enabled status, recurrence, timezone and next execution time against configuration. Save IDs and verification results. Reconcile uncertain creation before retrying; do not duplicate schedules. Correct definite errors without silently changing cadence/timezone. Inspect schedule health each invocation; repair only while active.
+Every trigger must identify this assignment, invocation purpose, durable directory and how to load this skill/state in a fresh execution context. A discovery trigger must instruct the run to continue until the Run budget finish conditions hold; trigger text states the finish conditions, not a batch size. Verify enabled status, recurrence, timezone and next execution time against configuration. Save IDs and verification results. Reconcile uncertain creation before retrying; do not duplicate schedules. Correct definite errors without silently changing cadence/timezone. Inspect schedule health each invocation; repair only while active.
 
 Setup is automated only when both search and report schedules are confirmed. Otherwise record degraded setup and disclose which activity requires manual invocation. A persisted due time is not a scheduler. Missing CV/user-data info leaves schedules active and discovery waiting. Execute the first search immediately once ready; creating schedules never substitutes for current work.
 
@@ -134,7 +142,7 @@ For report-only invocations, Step 6 without CV/user-data analysis or search. Oth
 
 Build/refresh the profile and strategies only when needed. If profile/search is unavailable, record waiting/degraded status; process a due report via Step 6, otherwise Step 8. Apply profile/preference changes to existing evaluations as needed.
 
-Select a bounded rotating task set: pending listings first, resumable searches, due retries, then due incremental/expanded work. Do not starve new sources with one endless pagination task. Perform due strategy/coverage maintenance within limits; save its next due time after completion. If no search work is due, Step 6. Save selected work, then Step 5.
+Select the next task set from all due work: pending listings first, resumable searches, due retries, then due incremental/expanded work. Rotate sources and cap pagination per task per pass so one endless pagination task cannot starve new sources; the cap limits a task, not the run. Perform due strategy/coverage maintenance within limits; save its next due time after completion. If no search work is due, Step 6. Save selected work, then Step 5.
 
 ### 5. Discover, validate, evaluate and persist - each task/batch
 
@@ -144,7 +152,7 @@ Fetch a bounded batch or load pending listings; save raw results before advancin
 
 Only after validation has been attempted, evaluate new/materially changed records, explaining uncertainty; preserve historical statuses. Persist job records, rankings, evidence, ledger and statistics before marking each listing complete. Checkpoint per task/small batch. Skip only locally failed tasks with saved retry times, not unsaved results.
 
-Continue the selected set within limits; do not repeatedly enlarge it. At the first limit save unfinished work as interrupted. Blocking errors preserve recoverable state and mark failed. On stop/expiry, Step 7; otherwise Step 6, or Step 8 if no safe reporting work remains within the run budget.
+After each task/batch, return to Step 4 and select again; repeat Steps 4-5 until a Run budget finish condition holds. Do not exceed the run time budget or request limit: at the first limit save unfinished work as interrupted. Blocking errors preserve recoverable state and mark failed. On stop/expiry, Step 7; otherwise Step 6, or Step 8 if no safe reporting work remains within the run budget.
 
 ### 6. Report - only when due or delivery retry is due
 
@@ -178,6 +186,6 @@ Before claiming unattended operation, verify scheduler records for both schedule
 
 ## Execution Instruction
 
-- After reading this skill, immediately begin executing its Procedure from Step 1. Progress through the procedure in order, following its conditions and branches. Execute as much of the procedure as possible within the current invocation. Do not stop merely because setup, configuration or profile analysis is complete. Continue towards actual job discovery (Step 5) whenever prerequisites permit.
+- After reading this skill, immediately begin executing its Procedure from Step 1. Progress through the procedure in order, following its conditions and branches. Execute as much of the procedure as possible within the current invocation. Do not stop merely because setup, configuration or profile analysis is complete. Continue towards actual job discovery (Step 5) whenever prerequisites permit. End the invocation only when a Run budget finish condition holds; after replying to the user or saving their answer, resume the run instead of ending it.
 
 - Ask the user questions **one at a time**. Never combine multiple questions into one message. Check conversation history and saved state first to avoid asking for information already available.
