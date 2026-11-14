@@ -40,7 +40,7 @@ Minimise unnecessary load on search providers and websites. Keep direct crawling
 
 ### Durable records and recovery
 
-Resolve `JOB_SEARCH_DATA_DIR`. All paths below are relative to it. Create missing files with valid initial content; never overwrite valid saved state.
+Resolve `JOB_SEARCH_DATA_DIR` (default = `job-search`). All paths below are relative to it. Create missing files with valid initial content; never overwrite valid saved state.
 
 - `assignment-state.json`: ID, start, expiry, configuration/version, stop request, setup readiness, assignment status and finalisation progress.
 - `candidate-profile.md`, `preferences.md`: profile, ordered criteria, constraints, feedback, reporting channel and optional alert rules.
@@ -159,6 +159,18 @@ Persist separate cleanup and final-delivery progress. Mark completed only when f
 ### 8. Save and close - every owned invocation
 
 Save pending work, counters, checkpoint, errors and next due/retry times before setting run status: completed for finished selected work, interrupted for limits/cancellation with work left, failed for blocking errors, waiting for missing prerequisites. Assignment and run status are distinct. Preserve failure/interruption status; do not overwrite it because shutdown succeeded. Release ownership only after writes cease; end the invocation, never jump back to another step after release.
+
+### 9. Report turn status - every invocation
+
+End every invocation with one short status line to the user, drawn only from
+saved state — never invented values.
+
+Format = `Search <serial> · found <total> jobs (<verified-open> verified, <new> new) · next search <date-time tz> · next report <date-time tz>`
+
+Example = `Search 001 · found 19 jobs (0 verified open, 0 new) · next search 14 Nov 2026 4pm GMT · next report 15 Nov 2026 8am GMT`
+
+Keep it to a single line. This status never replaces a due report or final
+report; it summarises the turn only.
 
 ## Acceptance Checks
 
