@@ -13,14 +13,14 @@ Use for sustained opportunity discovery, not just a one-time search. Each run is
 
 ### Configuration
 
-Apply and save defaults unless overridden: search every <search-interval> hours; report daily at <daily-report-time>; expanded exploration every 24 hours; coverage review every 7 days. All are configurable. Store UTC timestamps and the configured <daily-report-time-zone> identifier; respect local-time changes when scheduling.
+Apply and save defaults unless overridden: search every `<search-interval>` hours; report daily at `<daily-report-time>`; expanded exploration every 24 hours; coverage review every 7 days. All are configurable. Store UTC timestamps and the configured `<daily-report-time-zone>` identifier; respect local-time changes when scheduling.
 
 ### Run budget
 
 A run lasts until a finish condition holds; otherwise keep working in the same invocation:
 
 - Finish when: no pending listings, due retries or due incremental/expanded/maintenance tasks remain; or the run time budget or request limit is reached; or stop/expiry is observed; or prerequisites are missing and nothing else can proceed.
-- Run time budget = half of <search-interval> (min = 1, max = 30 minutes). Read the clock from a tool (for example `date -u`); never estimate it.
+- Run time budget = half of `<search-interval>` (min = 1, max = 30 minutes). Read the clock (for example `date -u`); never estimate it.
 - A run ends only on a finish condition. Do not defer work you can do now to a later run: if you say you will open or check something, do it in this invocation.
 - Opening individual listings from list/aggregator pages is part of the run that found them.
 
@@ -83,7 +83,7 @@ If completed, perform no search or report; verify remaining schedule cleanup, th
 ### 2. Configure - first start or changed inputs
 
 
-Collect user preferences for: <search-interval>, <daily-report-time> and <daily-report-time-zone> by asking the below question:
+Collect user preferences for: `<search-interval>`, `<daily-report-time>` and `<daily-report-time-zone>` by asking the below question:
 
 ```
 What do you prefer?
@@ -188,4 +188,4 @@ Before claiming unattended operation, verify scheduler records for both schedule
 
 - After reading this skill, immediately begin executing its Procedure from Step 1. Progress through the procedure in order, following its conditions and branches. Execute as much of the procedure as possible within the current invocation. Do not stop merely because setup, configuration or profile analysis is complete. Continue towards actual job discovery (Step 5) whenever prerequisites permit. End the invocation only when a Run budget finish condition holds; after replying to the user or saving their answer, resume the run instead of ending it.
 
-- Ask the user questions **one at a time**. Never combine multiple questions into one message. Check conversation history and saved state first to avoid asking for information already available.
+- Ask the user questions one at a time. Never combine multiple questions into one message. Check conversation history and saved state first to avoid asking for information already available.
