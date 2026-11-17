@@ -13,7 +13,7 @@ Use for sustained opportunity discovery over a period, not a one-time search. Th
 
 ### Configuration
 
-Apply and save defaults unless overridden: search every `<search-interval>` hours; report daily at `<daily-report-time>`; expanded exploration every 24 hours; coverage review every 7 days. All are configurable. Store UTC timestamps and the configured `<daily-report-time-zone>` identifier; respect local-time changes for the report time. The next work is due at the earliest of: the next due search type, the next daily report time, and the next retry time in the search ledger or report state.
+Apply and save defaults unless overridden: search every `<search-interval>` hours; report daily at `<daily-report-time>`; expanded exploration every 24 hours; coverage review every 7 days. All are configurable. Store UTC timestamps and the configured `<daily-report-time-zone>` identifier; respect local-time changes for the report time. The next work is due at the earliest of: the next due search type, the next daily report time, and the next retry time in the search ledger or report state. A run's time allowance is half of `<search-interval>`, at least 1 and at most 30 minutes. Take the current time and the run's elapsed time from the platform's run status or a clock; never estimate them.
 
 The assignment has an ID and a start, set once. It is active until the user asks to stop.
 
@@ -31,7 +31,7 @@ Do not invent missing preferences. Use lexicographic ranking, not weighted avera
 
 ### Search
 
-Search LinkedIn, Indeed, Glassdoor, Google Jobs, Wellfound, relevant boards, marketplaces, agencies and employer pages. Prefer original employer listings and direct application links. Explore alternative/adjacent titles, technologies, seniority, industries, workplace/employment types and varied companies. Include older or previously unindexed listings, not only recent ones.
+Search job websites including: Indeed, Glassdoor, Google Jobs, Wellfound, relevant boards, marketplaces, agencies and employer pages. Prefer original employer listings and direct application links. Explore alternative/adjacent titles, technologies, seniority, industries, workplace/employment types and varied companies. Include older or previously unindexed listings, not only recent ones.
 
 Search types: incremental each search interval with overlapping date windows where supported; expanded exploration every configured exploration interval; coverage/strategy review every configured review interval or when feedback justifies it. Avoid repeating a source/query within 24 hours except due incremental searches, pagination or recorded source updates. Rotate sources and cap the pages read in one search of a source/query, so one long paginated source cannot crowd out the others; save its cursor and continue from it in a later search. If a saved cursor has expired, restart that source/query with an overlapping date window where supported. Record coverage limitations; search results are not necessarily exhaustive. Update statistics after each search; revise strategies when due.
 
@@ -72,10 +72,9 @@ Collect user preferences for: `<search-interval>`, `<daily-report-time>` and `<d
 What do you prefer?
 
 - Search interval = 2 hours 
-- Daily report time = 8am
-- Daily report time zone = GMT
+- Daily report time = 8am GMT
 
-Respond "ok" or "y" to accept all 3; or something like "30 minutes, 10 am New York time"
+Respond "ok" or "y" to accept all; or something like "30 minutes, 10 am New York time"
 ```
 
 Understand the user's (optional) goal (so you can work towards it) by asking the below question:
@@ -117,11 +116,15 @@ Build/refresh the profile and strategies only when needed. If the CV/user-data i
 
 ### 3. Search - when search work is pending or due and the assignment is active
 
+Before searching, read `references/finding-and-validating-listings.md` (next to this file; in an agent workspace, `.agents/skills/job-search/references/finding-and-validating-listings.md`). It covers finding employer listings, checking whether a listing is still open, and sources you can query.
+
 Search work, in this order: `unchecked` listings, searches with a saved cursor, due retries, then the search types due by their saved due times (incremental, expanded, coverage/strategy review). Apply the Polite website access guide to every external request.
 
 Fetch results; save new listings as `unchecked`, and the cursor, before moving to the next page. For EVERY listing, validate existence/open status, original/direct URLs, workplace/eligibility and compensation; deduplicate by employer/title/location/URLs. Mark listings whose open status could not be confirmed as `unverified`, not confirmed open. Preserve unchanged duplicates without counting new discoveries.
 
 Only after validation has been attempted, evaluate new/materially changed records, explaining uncertainty; preserve historical statuses. Save job records, `jobs/summary`, rankings, evidence, ledger and statistics as you go. Save the next due time of each search type after it is done.
+
+Repeat this step until no search work is due, no `unchecked` listing remains, you are blocked, or the run's time allowance is used up. Each pass starts again from the saved records. Do not leave work you can do now for a later run.
 
 ### 4. Report - when a report or a delivery retry is due and the assignment is active
 
