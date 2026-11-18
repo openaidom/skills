@@ -1,7 +1,7 @@
 ---
 name: job-search
 description: "Continuously discover, validate, rank and track job opportunities from the user's CV/user-data, and deliver cumulative reports."
-argument-hint: "Preferences e.g: Remote, 4k USD/month, CV Match"
+argument-hint: "Preferences e.g: Remote, English language, 1k USD/month minimum"
 allowed-tools: Bash
 ---
 
@@ -96,16 +96,16 @@ Select one to make results more satisfactory.
 Present options for ranking results to the user, for example:
 
 ```
-Please specify your ranking preferences in order of importance, or leave blank for the default order:
+Please specify your ranking preferences in order of importance, or leave blank for the default order (i.e. no ranking):
 
-- Workplace type = Remote | Hybrid | Onsite
-- Minimum Salary = $36k/year
-- Employment Type = Full-time | Part-time | Contract | Freelance
-- CV Match
 - Language
+- CV Match
 - Location
+- Minimum Salary = any (e.g. $18k/year)
+- Workplace type = any (any | remote | hybrid | onsite)
+- Employment Type = any (any | full-time | part-time | contract | freelance)
 
-For example: $4k/month, CV Match, Remote (This means minimum salary of 4K is the highest priority)
+For example: Remote, English language (This means a job being remote is the highest priority)
 ```
 
 Save supplied preferences as well as exact ranking order, apply disclosed defaults and ask only for necessary missing information. Set the assignment ID and start once. Pause only work that depends on missing configuration.
