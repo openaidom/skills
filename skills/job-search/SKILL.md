@@ -91,7 +91,7 @@ Collect user preferences for: `<search-interval>`, `<daily-report-time>` and `<d
 ```
 What do you prefer?
 
-- Search interval = 2 hours 
+- Search interval = 1 hour
 - Daily report time = 8am GMT
 
 Respond "ok" or "y" to accept all; or something like "30 minutes, 10 am New York time"
