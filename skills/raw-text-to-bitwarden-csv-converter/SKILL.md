@@ -1,11 +1,6 @@
 ---
 name: raw-text-to-bitwarden-csv-converter
-description: >-
-  Convert raw text containing credentials and secrets into the CSV format
-  required for importing into the Bitwarden password manager. Use when someone
-  has unstructured notes with logins, cards, secure notes, or identities and
-  wants a Bitwarden-ready import file.
-allowed-tools: Bash
+description: "Convert raw text containing credentials and secrets into the CSV format required for importing into the Bitwarden password manager. Use when someone has unstructured notes with logins, cards, secure notes, or identities and wants a Bitwarden-ready import file."
 ---
 
 # Raw Text to Bitwarden CSV Converter

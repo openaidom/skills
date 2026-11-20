@@ -1,12 +1,6 @@
 ---
 name: lost-or-stolen-item-finder
-description: >-
-  Locate a lost or stolen personal item that may have been listed for resale on
-  second-hand marketplaces. Runs as a long-running, resumable operation that
-  builds and maintains a ranked leaderboard of candidate listings across many
-  runs, so a human can check the best matches against the real item. Use
-  when someone wants to search resale marketplaces for a specific missing item.
-allowed-tools: Bash
+description: "Locate a lost or stolen personal item that may have been listed for resale on second-hand marketplaces. Runs as a long-running, resumable operation that builds and maintains a ranked leaderboard of candidate listings across many runs, so a human can check the best matches against the real item. Use when someone wants to search resale marketplaces for a specific missing item."
 ---
 
 # Lost or Stolen Item Finder

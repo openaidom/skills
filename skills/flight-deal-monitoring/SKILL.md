@@ -1,12 +1,7 @@
 ---
 name: flight-deal-monitoring
-description: >-
-  Continuously search, compare, analyze, and monitor flight prices across
-  metasearch engines and airlines. Identify the lowest total travel cost while
-  balancing convenience, travel time, and baggage requirements, and alert the
-  user to fare drops and deals. 
+description: "Continuously search, compare, analyze, and monitor flight prices across metasearch engines and airlines. Identify the lowest total travel cost while balancing convenience, travel time, and baggage requirements, and alert the user to fare drops and deals."
 argument-hint: "2 adults, 2 teenagers from New York to London, depart 3 March and return 12 March"
-allowed-tools: Bash
 ---
 
 # Flight Deal Monitoring
