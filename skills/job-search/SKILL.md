@@ -18,7 +18,7 @@ The assignment has an ID and a start, set once. It is active until the user asks
 
 ### Required capabilities
 
-Find available web search, page reading, plain HTTP request (GET, and POST where a source needs it, to read public feeds and APIs), document-reading, durable-storage, delivery and task continuity capabilities. Task continuity means the work can run over many runs on the configured cadence and resume where it left off. Use existing tools, supported skills or scripts within actual permissions. `allowed-tools` does not provide these capabilities by itself. Disclose missing web, document, storage or delivery capabilities; never claim successful execution or delivery without tool confirmation. Without durable storage, stop. Without delivery, save reports and disclose non-delivery. Without task continuity, disclose it, offer manual runs, never claim unattended operation.
+Find available web search, page reading, plain HTTP request (GET, and POST where a source needs it, to read public feeds and APIs), document-reading, file tools or other storage mechanisms, delivery and task continuity capabilities. Task continuity means the work can run over many runs on the configured cadence and resume where it left off. Use existing tools, supported skills or scripts within actual permissions. Disclose missing web, document, file/storage or delivery capabilities; never claim successful execution or delivery without tool confirmation. Without file/storage, stop. Without delivery, save reports and disclose non-delivery. Without task continuity, disclose it, offer manual runs, never claim unattended operation.
 
 ### Profile
 
@@ -60,7 +60,7 @@ Minimise unnecessary load on search providers and websites. Keep direct crawling
 
 ### Records
 
-Records are saved under the storage keys below; every key starts with `openaidom/job-search/`, so it cannot clash with another skill's keys. Use durable storage: storage that survives a restart of the agent. Do not keep records only in working-directory files, which may be discarded on restart, and do not build a record as a file first. Create missing records with valid initial content; never replace a valid saved record with initial content.
+Save records to the file system under the keys/paths below; every key/path starts with `openaidom/job-search/`, so it cannot clash with another skill's keys. Create missing records with valid initial content; never replace a valid saved record with initial content. Keep each record small enough to save in one step: split a record that fails to save for size, and never carry on as if a failed save succeeded. Add to growing records (`search-ledger`, `jobs/summary`) rather than rewriting them. Where possible, update records in place; don't rewrite a whole record to change a field.
 
 - `openaidom/job-search/assignment-state`: ID, start, configuration/version, stop request, assignment status and final-report progress.
 - `openaidom/job-search/candidate-profile`, `openaidom/job-search/preferences`: profile, ordered criteria, constraints, feedback, reporting channel and optional alert rules.
